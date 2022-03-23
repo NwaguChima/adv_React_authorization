@@ -1,22 +1,23 @@
 import React, { FormEvent } from "react";
 import { useRef, useState, useEffect } from "react";
-import { FaCheck, FaTimes, FaInfoCircle } from "react-icons/fa";
+import { FaTimes, FaInfoCircle } from "react-icons/fa";
+import { GiCheckMark } from "react-icons/gi";
 import axios from "../../api/axios";
 
-const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const PWD_REGEX =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%_]).{8,}$/;
 
-const REGISTER_URL = "/api/v1/auth/signup";
+const REGISTER_URL = "/api/v1/users/signup";
 
 const Register = () => {
-  const userRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
   const errRef = useRef<HTMLParagraphElement>(null);
 
-  const [user, setUser] = useState("");
-  const [validName, setValidName] = useState(false);
-  const [userFocus, setUserFocus] = useState(false);
+  const [email, setEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(false);
+  const [emailFocus, setEmailFocus] = useState(false);
 
   const [pwd, setPwd] = useState("");
   const [validPwd, setValidPwd] = useState(false);
@@ -30,20 +31,16 @@ const Register = () => {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    userRef.current!.focus();
+    emailRef.current!.focus();
   }, []);
 
   useEffect(() => {
-    const result = USER_REGEX.test(user);
-    console.log(result);
-    console.log(user);
-    setValidName(result);
-  }, [user]);
+    const result = EMAIL_REGEX.test(email);
+    setValidEmail(result);
+  }, [email]);
 
   useEffect(() => {
     const result = PWD_REGEX.test(pwd);
-    console.log("abeg check", result);
-    console.log(pwd);
     setValidPwd(result);
 
     const match = pwd === matchPwd;
@@ -52,40 +49,50 @@ const Register = () => {
 
   useEffect(() => {
     setErrMsg("");
-  }, [user, pwd, matchPwd]);
+  }, [email, pwd, matchPwd]);
 
   const handleSubmit = async (e: FormEvent<EventTarget>) => {
     e.preventDefault();
     // preventing button being enabled with a JS hack
 
-    const validate1 = USER_REGEX.test(user);
+    const validate1 = EMAIL_REGEX.test(email);
     const validate2 = PWD_REGEX.test(pwd);
 
     if (!validate1 || !validate2) {
       setErrMsg("Invalid Entry");
       return;
     }
-    // console.log(user, pwd);
+    console.log(email, pwd);
     // setSuccess(true);
 
     try {
-      const response = await axios.post(
-        REGISTER_URL,
-        JSON.stringify({ user, pwd }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+      let data = JSON.stringify({
+        name: "Test",
+        email,
+        password: pwd,
+      });
+      console.log("now", data);
+      const response = await axios.post(REGISTER_URL, data, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
       console.log(response.data);
       console.log(JSON.stringify(response));
       setSuccess(true);
       // Clear Input fields
     } catch (error: any) {
+      // if (!error?.response) {
+      //   setErrMsg("No Server Response");
+      // } else if (error.response?.status === 403) {
+      //   setErrMsg("Username Taken");
+      // } else {
+      //   setErrMsg("Registration Failed");
+      // }
+
       if (!error?.response) {
         setErrMsg("No Server Response");
-      } else if (error.response?.status === 403) {
-        setErrMsg("Username Taken");
+      } else if (error.response?.data) {
+        setErrMsg(error.response.data.message);
       } else {
         setErrMsg("Registration Failed");
       }
@@ -98,9 +105,11 @@ const Register = () => {
     <>
       {success ? (
         <section>
-          <h1>Sucess!</h1>
+          <h1>Success!</h1>
           <p>
-            <a href="#">Sign In</a>
+            <a href="#">
+              Click here to <span className="signin_success">Sign In</span>
+            </a>
           </p>
         </section>
       ) : (
@@ -114,14 +123,14 @@ const Register = () => {
           </p>
           <h1>Register</h1>
           <form onSubmit={handleSubmit}>
-            <label htmlFor="username">
-              Username:
-              <span className={validName ? "valid" : "hide"}>
-                <i>
-                  <FaCheck />
+            <label htmlFor="email">
+              Email:
+              <span className={validEmail ? "valid" : "hide"}>
+                <i className="circle">
+                  <GiCheckMark />
                 </i>
               </span>
-              <span className={validName || !user ? "hide" : "invalid"}>
+              <span className={validEmail || !email ? "hide" : "invalid"}>
                 <i>
                   <FaTimes />
                 </i>
@@ -129,37 +138,40 @@ const Register = () => {
             </label>
             <input
               type="text"
-              id="username"
-              ref={userRef}
+              id="email"
+              ref={emailRef}
+              className={
+                emailFocus && email && !validEmail ? "fail" : "success"
+              }
               autoComplete="off"
-              onChange={(e) => setUser(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              aria-invalid={validName ? "false" : "true"}
+              aria-invalid={validEmail ? "false" : "true"}
               aria-describedby="uidnote"
-              onFocus={() => setUserFocus(true)}
-              onBlur={() => setUserFocus(false)}
+              onFocus={() => setEmailFocus(true)}
+              onBlur={() => setEmailFocus(false)}
             />
             <p
               id="uidnote"
               className={
-                userFocus && user && !validName ? "instructions" : "offscreen"
+                emailFocus && email && !validEmail
+                  ? "instructions"
+                  : "offscreen"
               }
             >
-              <i>
+              <i className="circle">
                 <FaInfoCircle />
               </i>
-              4 to 24 characters.
+              must be a valid email
               <br />
-              Must begin with a letter.
-              <br />
-              Letters, numbers, underscorees, hyphens allowed.
+              example@gmail.com
             </p>
 
             <label htmlFor="password">
               Password:
               <span className={validPwd ? "valid" : "hide"}>
                 <i>
-                  <FaCheck />
+                  <GiCheckMark />
                 </i>
               </span>
               <span className={validPwd || !pwd ? "hide" : "invalid"}>
@@ -171,6 +183,7 @@ const Register = () => {
             <input
               type="password"
               id="password"
+              className={pwdFocus && !validPwd ? "fail" : "success"}
               onChange={(e) => setPwd(e.target.value)}
               required
               aria-invalid={validPwd ? "false" : "true"}
@@ -178,31 +191,35 @@ const Register = () => {
               onFocus={() => setPwdFocus(true)}
               onBlur={() => setPwdFocus(false)}
             />
-            <p
+            <div
               id="pwdnote"
               className={pwdFocus && !validPwd ? "instructions" : "offscreen"}
             >
-              <i>
+              <i className="circle">
                 <FaInfoCircle />
               </i>
-              8 to 24 characters.
-              <br />
-              Must include uppercase and lowercase letters, a number and a
-              special character.
-              <br />
-              Allowed special characters:{" "}
-              <span aria-label="exclamation mark">!</span>{" "}
-              <span aria-label="at symbol">@</span>{" "}
-              <span aria-label="hashtag">#</span>{" "}
-              <span aria-label="dollar sign">$</span>{" "}
-              <span aria-label="percent">%</span>
-            </p>
+              <div>
+                8 to 24 characters.
+                <br />
+                Must include uppercase and lowercase letters, a number and a
+                special character.
+                <br />
+                <p>
+                  Allowed special characters:{" "}
+                  <span aria-label="exclamation mark">!</span>{" "}
+                  <span aria-label="at symbol">@</span>{" "}
+                  <span aria-label="hashtag">#</span>{" "}
+                  <span aria-label="dollar sign">$</span>{" "}
+                  <span aria-label="percent">%</span>
+                </p>
+              </div>
+            </div>
 
             <label htmlFor="confirm_pwd">
               Confirm Password:
               <span className={validMatch && matchPwd ? "valid" : "hide"}>
                 <i>
-                  <FaCheck />
+                  <GiCheckMark />
                 </i>
               </span>
               <span className={validMatch || !matchPwd ? "hide" : "invalid"}>
@@ -214,6 +231,7 @@ const Register = () => {
             <input
               type="password"
               id="confirm_pwd"
+              className={matchFocus && !validMatch ? "fail" : "success"}
               onChange={(e) => setMatchPwd(e.target.value)}
               required
               aria-invalid={validMatch ? "false" : "true"}
@@ -230,17 +248,17 @@ const Register = () => {
               {" "}
               <i>
                 <FaInfoCircle />
-                Must match the password input field
               </i>{" "}
+              Must match the password input field
             </p>
 
             <button
-              disabled={!validName || !validMatch || !validPwd ? true : false}
+              disabled={!validEmail || !validMatch || !validPwd ? true : false}
             >
               Sign Up
             </button>
           </form>
-          <p>
+          <p className="existing_user">
             Already registerd ?<br />
             <span className="line">
               {/* usually a react Link Element */}
