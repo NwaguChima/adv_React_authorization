@@ -18,7 +18,7 @@ const Register = () => {
 
   const [pwd, setPwd] = useState("");
   const [validPwd, setValidPwd] = useState(false);
-  const [pwdFocus, setValidPwdFocus] = useState(false);
+  const [pwdFocus, setPwdFocus] = useState(false);
 
   const [matchPwd, setMatchPwd] = useState("");
   const [validMatch, setValidMatch] = useState(false);
@@ -103,6 +103,30 @@ const Register = () => {
           <br />
           Letters, numbers, underscorees, hyphens allowed.
         </p>
+
+        <label htmlFor="password">
+          Password:
+          <span className={validPwd ? "valid" : "hide"}>
+            <i>
+              <FaCheck />
+            </i>
+          </span>
+          <span className={validPwd || !pwd ? "hide" : "invalid"}>
+            <i>
+              <FaTimes />
+            </i>
+          </span>
+        </label>
+        <input
+          type="password"
+          id="password"
+          onChange={(e) => setPwd(e.target.value)}
+          required
+          aria-invalid={validPwd ? "false" : "true"}
+          aria-describedby="pwdnote"
+          onFocus={() => setPwdFocus(true)}
+          onBlur={() => setPwdFocus(false)}
+        />
       </form>
     </section>
   );
