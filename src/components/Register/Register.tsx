@@ -170,7 +170,30 @@ const Register = () => {
           onFocus={() => setMatchFocus(true)}
           onBlur={() => setMatchFocus(false)}
         />
+        <p
+          id="confirmnote"
+          className={matchFocus && !validMatch ? "instructions" : "offscreen"}
+        >
+          {" "}
+          <i>
+            <FaInfoCircle />
+            Must match the password input field
+          </i>{" "}
+        </p>
+
+        <button
+          disabled={!validName || !validMatch || !validPwd ? true : false}
+        >
+          Sign Up
+        </button>
       </form>
+      <p>
+        Already registerd ?<br />
+        <span className="line">
+          {/* usually a react Link Element */}
+          <a href="#">Sign In</a>
+        </span>
+      </p>
     </section>
   );
 };
