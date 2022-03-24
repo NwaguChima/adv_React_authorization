@@ -5,47 +5,45 @@ import axios from "../../api/axios";
 const LOGIN_URL = "/api/v1/users/login";
 const Login = () => {
   const Auth = useContext(AuthContext);
-  const userRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
   const errRef = useRef<HTMLParagraphElement>(null);
 
-  const [user, setUser] = useState("");
+  const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    userRef.current!.focus();
+    emailRef.current!.focus();
   }, []);
 
   useEffect(() => {
     setErrMsg("");
-  }, [user, pwd]);
+  }, [email, pwd]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        LOGIN_URL,
-        JSON.stringify({ user, pwd }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-      console.log(JSON.stringify(response?.data));
-      const accessToken = response?.data?.accessToken;
-      const roles = response?.data?.roles;
-      Auth?.setAuth({ user, pwd, roles, accessToken });
-      setUser("");
+      let data = JSON.stringify({ email, password: pwd });
+      const response = await axios.post(LOGIN_URL, data, {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      console.log(response);
+      const accessToken = response?.data?.token;
+      const role = response?.data?.data.role;
+      Auth?.setAuth({ email, pwd, role, accessToken });
+      setEmail("");
       setPwd("");
       setSuccess(true);
     } catch (error: any) {
+      console.log(error.response?.status);
       if (!error?.response) {
         setErrMsg("No Server Response");
       } else if (error.response?.status === 400) {
         setErrMsg("Missing username or password");
       } else if (error.response?.status === 401) {
-        setErrMsg("Unauthorized");
+        setErrMsg("Invalid username or password");
       } else {
         setErrMsg("Login Failed");
       }
@@ -73,14 +71,14 @@ const Login = () => {
           </p>
           <h1>Sign In</h1>
           <form onSubmit={handleSubmit}>
-            <label htmlFor="username">Username: </label>
+            <label htmlFor="email">Email: </label>
             <input
               type="text"
-              id="username"
-              ref={userRef}
+              id="email"
+              ref={emailRef}
               autoComplete="off"
-              onChange={(e) => setUser(e.target.value)}
-              value={user}
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
               required
             />
             <label htmlFor="password">Password: </label>
