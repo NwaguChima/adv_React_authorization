@@ -13,6 +13,11 @@ import Home from "./components/Others/Home";
 import Missing from "./components/Others/Missing";
 import RequireAuth from "./components/Others/RequireAuth";
 
+const ROLES = {
+  admin: "admin",
+  user: "user",
+};
+
 function App() {
   return (
     <Routes>
@@ -23,11 +28,20 @@ function App() {
         <Route path="linkpage" element={<LinkPage />} />
         <Route path="unauthorized" element={<Unauthorized />} />
 
-        <Route element={<RequireAuth />}>
-          {/* We want to protect these routes */}
+        {/* We want to protect these routes */}
+        <Route element={<RequireAuth allowedRoles={[ROLES.admin]} />}>
           <Route path="/" element={<Home />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[ROLES.user]} />}>
           <Route path="editor" element={<Editor />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[ROLES.user]} />}>
           <Route path="admin" element={<Admin />} />
+        </Route>
+
+        <Route element={<RequireAuth allowedRoles={[ROLES.user]} />}>
           <Route path="lounge" element={<Lounge />} />
         </Route>
 
