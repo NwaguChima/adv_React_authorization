@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Editor = () => {
+const Guides = () => {
   return (
     <section>
-      <h1>Editors Page</h1>
+      <h1>Guides Page</h1>
       <br />
-      <p>You must have been assigned an Editor role.</p>
+      <p>You must have been assigned a Guides role.</p>
       <div className="flexGrow">
         <Link to="/">Home</Link>
       </div>
@@ -14,4 +14,4 @@ const Editor = () => {
   );
 };
 
-export default Editor;
+export default Guides;

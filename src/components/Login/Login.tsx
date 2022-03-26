@@ -1,6 +1,5 @@
-import { useRef, useState, useEffect, useContext } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import AuthContext from "../../context/AuthProvider";
 import axios from "../../api/axios";
 import useAuth from "../../api/Hooks/useAuth";
 
@@ -18,7 +17,6 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  // const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     emailRef.current!.focus();
@@ -36,13 +34,12 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-      console.log(response);
+
       const accessToken = response?.data?.token;
       const role = response?.data?.data.role;
       Auth?.setAuth({ email, pwd, role, accessToken });
       setEmail("");
       setPwd("");
-      // setSuccess(true);
       navigate(from, { replace: true });
     } catch (error: any) {
       console.log(error.response?.status);
@@ -91,7 +88,7 @@ const Login = () => {
       <p>
         Need an Account ?<br />
         <span className="line">
-          <a href="#">Sign up</a>
+          <Link to="/register">Sign up</Link>
         </span>
       </p>
     </section>

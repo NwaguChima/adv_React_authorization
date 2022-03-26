@@ -179,3 +179,14 @@ a {
   font-size: 1rem;
   color: black;
 }
+
+.flexGrow {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+li {
+  list-style: none;
+}

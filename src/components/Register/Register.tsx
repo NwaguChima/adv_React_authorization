@@ -2,6 +2,7 @@ import React, { FormEvent } from "react";
 import { useRef, useState, useEffect } from "react";
 import { FaTimes, FaInfoCircle } from "react-icons/fa";
 import { GiCheckMark } from "react-icons/gi";
+import { Link } from "react-router-dom";
 import axios from "../../api/axios";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -262,7 +263,7 @@ const Register = () => {
             Already registerd ?<br />
             <span className="line">
               {/* usually a react Link Element */}
-              <a href="#">Sign In</a>
+              <Link to="/login">Sign In</Link>
             </span>
           </p>
         </section>
