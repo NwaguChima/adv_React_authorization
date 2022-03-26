@@ -13,6 +13,7 @@ import Missing from "./components/Others/Missing";
 import RequireAuth from "./components/Others/RequireAuth";
 import Guides from "./components/Others/Guides";
 import PersistLogin from "./components/PersistLogin/PersistLogin";
+import useRefreshToken from "./api/Hooks/useRefreshToken";
 
 const ROLES = {
   admin: ["admin"],
@@ -22,6 +23,9 @@ const ROLES = {
 
 function App() {
   // console.log(ROLES.user.includes("admin"));
+  const refresh = useRefreshToken();
+  console.log("...", refresh());
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>

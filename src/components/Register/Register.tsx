@@ -10,7 +10,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PWD_REGEX =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%_]).{8,}$/;
 
-const REGISTER_URL = "/api/v1/users/signup";
+const REGISTER_URL = "/signup";
 
 const Register = () => {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -82,14 +82,6 @@ const Register = () => {
       setSuccess(true);
       // Clear Input fields
     } catch (error: any) {
-      // if (!error?.response) {
-      //   setErrMsg("No Server Response");
-      // } else if (error.response?.status === 403) {
-      //   setErrMsg("Username Taken");
-      // } else {
-      //   setErrMsg("Registration Failed");
-      // }
-
       if (!error?.response) {
         setErrMsg("No Server Response");
       } else if (error.response?.data) {

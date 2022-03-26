@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "../../api/axios";
 import useAuth from "../../api/Hooks/useAuth";
 
-const LOGIN_URL = "/api/v1/users/login";
+const LOGIN_URL = "/login";
 const Login = () => {
   const Auth = useAuth();
 
@@ -60,6 +60,7 @@ const Login = () => {
   };
 
   useEffect(() => {
+    console.log("persist", Auth?.persist);
     localStorage.setItem("persist", Auth?.persist as any);
   }, [Auth?.persist]);
 
@@ -93,22 +94,21 @@ const Login = () => {
         />
         <button>Sign In</button>
       </form>
-      <p>
+      <div>
         Need an Account ?<br />
         <span className="line">
           <Link to="/register">Sign up</Link>
           <div className="persistCheck">
             <input
               type="checkbox"
-              name=""
               id="persist"
               onChange={togglePersist}
-              checked={Auth?.persist as any}
+              checked={Auth?.persist}
             />
             <label htmlFor="persist">Trust This Device</label>
           </div>
         </span>
-      </p>
+      </div>
     </section>
   );
 };
