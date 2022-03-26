@@ -55,6 +55,14 @@ const Login = () => {
     }
   };
 
+  const togglePersist = () => {
+    Auth?.setPersist((prev: boolean) => !prev);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("persist", Auth?.persist as any);
+  }, [Auth?.persist]);
+
   return (
     <section>
       <p
@@ -89,6 +97,16 @@ const Login = () => {
         Need an Account ?<br />
         <span className="line">
           <Link to="/register">Sign up</Link>
+          <div className="persistCheck">
+            <input
+              type="checkbox"
+              name=""
+              id="persist"
+              onChange={togglePersist}
+              checked={Auth?.persist as any}
+            />
+            <label htmlFor="persist">Trust This Device</label>
+          </div>
         </span>
       </p>
     </section>

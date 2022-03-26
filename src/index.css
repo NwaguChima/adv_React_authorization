@@ -190,3 +190,9 @@ a {
 li {
   list-style: none;
 }
+
+[type="checkbox"] {
+  height: 20px;
+  width: 20px;
+  margin: 0 5px 2px 2px;
+}
