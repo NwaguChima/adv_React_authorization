@@ -9,7 +9,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PWD_REGEX =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%_]).{8,}$/;
 
-const REGISTER_URL = "/api/v1/users/signup";
+const REGISTER_URL = "/signup";
 
 const Register = () => {
   const emailRef = useRef<HTMLInputElement>(null);
